@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import './App.css';
 import Customers from './components/customers/customers';
 
+function updateState(response){
+
+}
+
 class App extends Component {
     constructor(props) {
         super(props);
@@ -20,7 +24,8 @@ class App extends Component {
         })
         .then(function(response) {
             console.log(response);
-            this.setState({output: response});
+            // this.setState({output: response});
+            updateState(response);
         })
     }
     handleChange(event) {
