@@ -36,23 +36,55 @@ app.use((req, res, next) => {
         next();
     }
 });
+
+app.get('/api/try', (req, res) => {
+    var query = {};
+    query.word = 'doing';
+    Dictionary.find(query, function(err, ebooks) {
+    if(err)
+        res.status(500).send(err);
+    else
+        res.json(ebooks);
+    });
+    // res.send(result);
+});
+
 app.get('/api/check', (req, res) => {
     var data = req.query.data;
     var pos = data.split(" ");
     var result = [];
     for (var i = 0; i < pos.length; i++) {
         console.log(pos[i]);
-        result[i]['work'] = pos[i];
+        var item = {};
+        item.word = pos[i];
+        // result[i]=[];
+        // result[i][] = pos[i];
+        // var query = {};
+        // query.word = pos[i];
 
-        result[i]['finding'] = Dictionary.find(work:pos[i],function(err, ebooks) {
-            if (err)
-                return err;
-            else
-                return json(ebooks);
-        });
+        // var find = Dictionary.find(query, function(err, ebooks) {
+        //     if(err)
+        //         // res.status(500).send(err);
+        //     else
+        //         return ebooks;
+        // });
+
+        item.find = fetch('http://localhost:4000/api/dictionary?word='+pos[i], {
+            method: 'get',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            }
+        }).then(res=>res.json())
+            .then(res => res);
+
+        // item.find = find;
+        // console.log(item);
+
+        result[i] = item;
 
     }
-    res.status(200).send(result);
+    res.status(200).json(result);
 });
 
 
