@@ -20,40 +20,52 @@ mongoose.connect('mongodb://localhost/test');
 
 // data structure
 var Dictionary = require('./model/dictionaryModel');
+app.use((req, res, next) => {
+    const origin = req.get('origin');
 
+    // TODO Add origin validation
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Credentials', true);
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control, Pragma');
 
+    // intercept OPTIONS method
+    if (req.method === 'OPTIONS') {
+        res.sendStatus(204);
+    } else {
+        next();
+    }
+});
 app.get('/api/check', (req, res) => {
-    const data = req.query.data;
-    // res.json(data);
-    const result = [];
-    const pos = data.split(" ");
+    var data = req.query.data;
+    var pos = data.split(" ");
+    var result = [];
+    for (var i = 0; i < pos.length; i++) {
+        console.log(pos[i]);
+        result[i]['work'] = pos[i];
 
-    for(var check = 0; check < pos.length; check++){
-        var word = pos[check];
-        var query = {};
-        query.word=word;
-        var dictionary = new Dictionary.find(query, function(err, items){
-            if(err)
+        result[i]['finding'] = Dictionary.find(work:pos[i],function(err, ebooks) {
+            if (err)
                 return err;
             else
-                return items;
+                return json(ebooks);
         });
-        console.log(dictionary);
-        // res.send(dictionary);
+
     }
+    res.status(200).send(result);
 });
 
 
 // Dictionary Routs =============================
 // Post data JSON
 app.post('/api/dictionary/post', (req, res) => {
-  var items = req.body;
-  for(var i=0; i<items.length; i++) {
-      var item = items[i];
-      var dictionary = new Dictionary(item);
-      dictionary.save();
-  }
-  res.status(201).send('Done');
+    var items = req.body;
+    for(var i=0; i<items.length; i++) {
+        var item = items[i];
+        var dictionary = new Dictionary(item);
+        dictionary.save();
+    }
+    res.status(201).send('Done');
 });
 
 // Get data
@@ -65,23 +77,23 @@ app.get('/api/dictionary', (req, res) => {
     if(req.query.wordType){
         query.wordType = req.query.wordType;
     }
-      Dictionary.find(query, function(err, items){
-          if(err)
-              res.status(500).send(err);
-          else
-              res.json(items);
-      });
+    Dictionary.find(query, function(err, items){
+        if(err)
+            res.status(500).send(err);
+        else
+            res.json(items);
+    });
 });
 
 // Del data
 app.delete('/api/dictionary/dlt', (req, res) => {
-  var query = {};
-  Dictionary.remove(query, function(err, items){
-      if(err)
-          res.status(500).send(err);
-      else
-          res.send('Done');
-  });
+    var query = {};
+    Dictionary.remove(query, function(err, items){
+        if(err)
+            res.status(500).send(err);
+        else
+            res.send('Done');
+    });
 });
 // Ends Dictionary routs ===========================
 
