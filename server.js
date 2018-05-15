@@ -24,7 +24,23 @@ var Dictionary = require('./model/dictionaryModel');
 
 app.get('/api/check', (req, res) => {
     const data = req.query.data;
-    res.json(data);
+    // res.json(data);
+    const result = [];
+    const pos = data.split(" ");
+
+    for(var check = 0; check < pos.length; check++){
+        var word = pos[check];
+        var query = {};
+        query.word=word;
+        var dictionary = new Dictionary.find(query, function(err, items){
+            if(err)
+                return err;
+            else
+                return items;
+        });
+        console.log(dictionary);
+        // res.send(dictionary);
+    }
 });
 
 
