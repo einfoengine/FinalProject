@@ -2,19 +2,19 @@ import React, { Component } from 'react';
 import './App.css';
 import Customers from './components/customers/customers';
 
-function updateState(response){
-
-}
-
 class App extends Component {
     constructor(props) {
         super(props);
         this.state = {value: '', output:''};
         this.handleChange = this.handleChange.bind(this);
         this.check = this.check.bind(this);
+        this.updateState = this.updateState.bind(this);
+    }
+    updateState(response){
+        this.setState({output: response});
     }
     check(){
-        console.log(this.state.value);
+        // console.log(this.state.value);
 
         fetch('http://localhost:4000/api/check?data='+this.state.value, {
             mode: 'no-cors',
@@ -24,8 +24,7 @@ class App extends Component {
         })
         .then(function(response) {
             console.log(response);
-            // this.setState({output: response});
-            updateState(response);
+            // this.updateState(response);
         })
     }
     handleChange(event) {
