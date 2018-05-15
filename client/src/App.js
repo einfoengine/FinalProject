@@ -12,14 +12,16 @@ class App extends Component {
     check(){
         console.log(this.state.value);
 
-        fetch('http://localhost:4000/api/check?data='+this.state.value, {mode: 'no-cors'})
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(myJson) {
-                console.log(myJson);
-                this.setState({output: myJson});
-            });
+        fetch('http://localhost:4000/api/check?data='+this.state.value, {
+            mode: 'no-cors',
+            header: {
+                'Access-Control-Allow-Origin':'*',
+            }
+        })
+        .then(function(response) {
+            console.log(response);
+            this.setState({output: response});
+        })
     }
     handleChange(event) {
         this.setState({value: event.target.value});
